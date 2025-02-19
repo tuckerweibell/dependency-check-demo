@@ -61,3 +61,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "sequenceserver", "= 3.0"
+
+gem "pwpush", "= 0.1.0"
