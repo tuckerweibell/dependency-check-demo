@@ -1,7 +1,7 @@
 # Dependency Check 🔍
 
 ### Overview 🛡️
-This repository contains a GitHub Actions workflow that scans dependency updates for security vulnerabilities whenever a pull request modifies dependency lock files. It ensures that new vulnerabilities are not introduced into the codebase.
+This repository contains a GitHub Actions workflow that scans dependency updates for security vulnerabilities whenever a pull request modifies dependency lock files. It ensures that new vulnerabilities are not introduced into the codebase. This is a lightweight version of [dependency-review-action](https://github.com/actions/dependency-review-action) that does not require Github Advanced Security.
 
 ### How It Works ⚙️
 **The workflow triggers only when a PR modifies any of the following files:**
