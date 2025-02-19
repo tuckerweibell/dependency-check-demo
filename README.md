@@ -32,11 +32,11 @@ NOTE: This can be customized to add additional dependency files as needed (see [
 - The repository should contain the `.github/scripts/dependency_check.rb` script to analyze scan results.
 
 ### Why Use This? 🚀
-✅ Prevents security vulnerabilities from being merged.
-✅ Automates security checks for dependency updates.
-✅ Works across multiple package managers (Bundler, npm, Yarn, pnpm).
-✅ Only flags new issues, reducing false positives.
-✅ Lightweight and integrates into CI/CD workflows.
+- ✅ Prevents security vulnerabilities from being merged.
+- ✅ Automates security checks for dependency updates.
+- ✅ Works across multiple package managers (Bundler, npm, Yarn, pnpm).
+- ✅ Only flags new issues, reducing false positives.
+- ✅ Lightweight and integrates into CI/CD workflows.
 
 ### How to Enable ⚡
 Ensure this workflow is placed in `.github/workflows/dependency-check.yml` within your repository. GitHub will automatically run the check when relevant files are updated. Ensure `.github/scripts/dependency_check.rb` is also present. This file can be customized to display results based on specific requirements.
