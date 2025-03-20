@@ -16,25 +16,29 @@ jobs:
         run: |
           git config --global --add safe.directory "*"
           
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: List modified files in PR
+        uses: actions/github-script@v6
+        id: list-files
         with:
-          fetch-depth: 0  # Ensure full history is available
-
-      - name: Fetch Base Branch
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
-          git checkout ${{ github.event.pull_request.base.ref }}
-
-      - name: Check for Dependency Lock File Changes
-        id: check-changes
-        run: |
-          echo "Source branch: ${{ github.event.pull_request.head.ref }}"
-          echo "Target branch: ${{ github.event.pull_request.base.ref }}"
-          files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD)
-          echo $files
-        
+          script: |
+            // Get the pull request number from the event payload
+            const pull_number = context.payload.pull_request.number;
             
+            // Call the GitHub API to list files changed in the pull request
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number,
+            });
+            
+            // Create a string of filenames separated by newlines
+            const fileList = files.map(file => file.filename).join("\n");
+            
+            // Log the list so you can see it in the workflow logs
+            console.log("Modified files:\n" + fileList);
+            
+            // Optionally, set this as an output variable for use in later steps
+            return fileList;
           
       - name: Install Trivy Scanner
         run: |
