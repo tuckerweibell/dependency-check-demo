@@ -12,7 +12,10 @@ jobs:
       ALERT_ON: "MEDIUM,HIGH,CRITICAL" # Options: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
     
     steps:
-
+      - name: Specify Git Safe Directories
+        run: |
+          git config --global --add safe.directory "*"
+          
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
