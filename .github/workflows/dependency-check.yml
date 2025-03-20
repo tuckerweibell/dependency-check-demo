@@ -4,26 +4,45 @@ on:
   pull_request
 
 jobs:
+  check-dependency-files:
+    runs-on: ubuntu-latest
+    outputs:
+      match_found: ${{ steps.check.outputs.match_found }}
+    steps:
+      - name: Check for dependency file modifications
+        id: check
+        run: |
+          apt-get update -y && apt-get install -y jq
+          MODIFIED_FILES=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
+               | jq -r '.[].filename')
+          echo "Modified files:"
+          echo "$MODIFIED_FILES"
+          
+          DEP_FILES="Gemfile.lock package-lock.json yarn.lock pnpm-lock.yaml"
+          MATCH_FOUND="false"
+          for file in $MODIFIED_FILES; do
+            for dep in $DEP_FILES; do
+              if [ "$file" = "$dep" ]; then
+                MATCH_FOUND="true"
+              fi
+            done
+          done
+          echo "match_found=$MATCH_FOUND" >> $GITHUB_OUTPUT
+
   dependency-check:
     runs-on: ubuntu-latest
     container:
       image: ruby:3.1.3
     env:
       ALERT_ON: "MEDIUM,HIGH,CRITICAL" # Options: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-    
+    needs: check-dependency-files
+    if: needs.check-dependency-files.outputs.match_found == 'true'
     steps:
       - name: Specify Git Safe Directories
-        run: |
-          git config --global --add safe.directory "*"
-          
-      - name: List modified files via API
-        run: |
-          apt-get update -y && apt install jq -y
-          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-               -H "Accept: application/vnd.github.v3+json" \
-               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
-               | jq '.[].filename'
-          
+        run: git config --global --add safe.directory "*"
+        
       - name: Install Trivy Scanner
         run: |
           TRIVY_VERSION="0.59.1"
@@ -45,8 +64,7 @@ jobs:
           fetch-depth: 0
 
       - name: Specify Git Safe Directories
-        run: |
-          git config --global --add safe.directory "*"
+        run: git config --global --add safe.directory "*"
           
       - name: Checkout Default Branch
         run: |
@@ -70,5 +88,12 @@ jobs:
       
       - name: Analyze Scan Results
         id: analyze-scan-results
-        run: |
-          ruby .github/scripts/dependency_check.rb
+        run: ruby .github/scripts/dependency_check.rb
+
+  no-dependency-update:
+    runs-on: ubuntu-latest
+    needs: check-dependency-files
+    if: needs.check-dependency-files.outputs.match_found == 'false'
+    steps:
+      - name: Report no dependency update
+        run: echo "No dependency lock file modifications found. Exiting workflow with success."
