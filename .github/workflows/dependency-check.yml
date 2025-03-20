@@ -44,7 +44,7 @@ jobs:
           git config --global --add safe.directory "*"
       
       - name: Checkout Code
-        uses: actions/checkout@4
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
           
