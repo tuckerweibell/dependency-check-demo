@@ -16,8 +16,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0 # Fetch full history to allow comparisons
+          ref: ${{ github.event.pull_request.head.ref }} # Checkout the PR's source branch
+
+      - name: Fetch Target Branch
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
           
       - name: Check for Dependency Lock File Changes
         id: check-changes
