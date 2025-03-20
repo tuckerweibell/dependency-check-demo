@@ -31,7 +31,7 @@ jobs:
             changed_files=$(git diff --name-only 26587dd7b3f9d97378aabf3242044ae7ffb74679 d24cf832f90289a7760761b844ccb90f95a8ae03)
           fi
   
-  echo "Changed files: $changed_files"
+          echo "Changed files: $changed_files"
           
       - name: Install Trivy Scanner
         run: |
