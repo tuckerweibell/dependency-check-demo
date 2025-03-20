@@ -21,9 +21,14 @@ jobs:
       - name: Check for Dependency Lock File Changes
         id: check-changes
         run: |
-          apt-get update && apt install git
-          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
-          echo "::set-output name=ts::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .ts$ | xargs)"
+          watched_files=("config.json" "application.conf")
+          if [[ ${{ github.event_name }} == 'pull_request' ]]; then
+            changed_files=$(git diff --name-only -r HEAD^1 HEAD)
+            echo $changed_files
+          else
+            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
+            echo $changed_files
+          fi
           
       - name: Install Trivy Scanner
         run: |
