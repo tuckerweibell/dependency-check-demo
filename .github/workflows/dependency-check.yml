@@ -21,13 +21,11 @@ jobs:
       - name: Check for Dependency Lock File Changes
         id: check-changes
         run: |
-          watched_files=$("config.json" "application.conf")
+          watched_files=("config.json" "application.conf")
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
             changed_files=$(git diff --name-only -r HEAD^1 HEAD)
-            echo $changed_files
           else
             changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-            echo $changed_files
           fi
           
       - name: Install Trivy Scanner
