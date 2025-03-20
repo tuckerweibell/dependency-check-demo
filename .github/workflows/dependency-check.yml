@@ -24,10 +24,11 @@ jobs:
         run: |
           watched_files=("config.json" "application.conf")
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            changed_files=$(git diff --name-only -r HEAD^1 HEAD)
+            changed_files=$(git diff --name-only HEAD^1 HEAD)
           else
             changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           fi
+          echo "Changed files: $changed_files"
           
       - name: Install Trivy Scanner
         run: |
