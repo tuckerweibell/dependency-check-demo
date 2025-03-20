@@ -20,6 +20,7 @@ jobs:
           
       - name: Check for Dependency Lock File Changes
         id: check-changes
+        shell: bash
         run: |
           watched_files=("config.json" "application.conf")
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
