@@ -39,14 +39,14 @@ jobs:
           tar -xzf trivy.tar.gz -C /usr/local/bin
           trivy --version
 
-      - name: Specify Git Safe Directories
-        run: |
-          git config --global --add safe.directory "*"
-      
       - name: Checkout Code
         uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
+
+      - name: Specify Git Safe Directories
+        run: |
+          git config --global --add safe.directory "*"
           
       - name: Checkout Default Branch
         run: |
