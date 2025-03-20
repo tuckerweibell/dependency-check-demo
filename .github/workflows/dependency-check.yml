@@ -19,20 +19,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch full history to allow comparisons
-          ref: ${{ github.event.pull_request.head.ref }} # Checkout the PR's source branch
+          fetch-depth: 0  # Ensure full history is available
 
-      - name: Fetch Target Branch
+      - name: Fetch Base Branch
         run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          
+          git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+          git checkout ${{ github.event.pull_request.base.ref }}
+
       - name: Check for Dependency Lock File Changes
         id: check-changes
         run: |
           echo "Source branch: ${{ github.event.pull_request.head.ref }}"
           echo "Target branch: ${{ github.event.pull_request.base.ref }}"
-
-          git diff --name-only ${{ github.event.pull_request.head.ref }} ${{ github.event.pull_request.base.ref }}
+          git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD
             
           
       - name: Install Trivy Scanner
