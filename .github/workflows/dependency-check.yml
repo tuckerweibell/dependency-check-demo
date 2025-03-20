@@ -1,12 +1,7 @@
 name: Dependency Check
 
 on:
-  pull_request:
-    paths:
-      - '**/Gemfile.lock'
-      - '**/package-lock.json'
-      - '**/yarn.lock'
-      - '**/pnpm-lock.yaml'
+  pull_request
 
 jobs:
   dependency-check:
