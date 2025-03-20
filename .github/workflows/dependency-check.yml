@@ -16,29 +16,12 @@ jobs:
         run: |
           git config --global --add safe.directory "*"
           
-      - name: List modified files in PR
-        uses: actions/github-script@v6
-        id: list-files
-        with:
-          script: |
-            // Get the pull request number from the event payload
-            const pull_number = context.payload.pull_request.number;
-            
-            // Call the GitHub API to list files changed in the pull request
-            const { data: files } = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number,
-            });
-            
-            // Create a string of filenames separated by newlines
-            const fileList = files.map(file => file.filename).join("\n");
-            
-            // Log the list so you can see it in the workflow logs
-            console.log("Modified files:\n" + fileList);
-            
-            // Optionally, set this as an output variable for use in later steps
-            return fileList;
+      - name: List modified files via API
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" \
+               | jq '.[].filename'
           
       - name: Install Trivy Scanner
         run: |
