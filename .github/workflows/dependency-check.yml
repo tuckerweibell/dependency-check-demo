@@ -24,11 +24,11 @@ jobs:
         run: |
           watched_files=("config.json" "application.conf")
           if [[ ${{ github.event_name }} == 'pull_request' ]]; then
-            # For pull requests, compare the 'before' and 'after' commit references
+            # For pull requests, use 'before' and 'after' from GitHub context for comparison
             changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           else
-            # For other events (e.g., push), compare the specific commits
-            changed_files=$(git diff --name-only 26587dd7b3f9d97378aabf3242044ae7ffb74679 d24cf832f90289a7760761b844ccb90f95a8ae03)
+            # For other events (e.g., push), use the commit range from GitHub context or specific commits
+            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           fi
   
           echo "Changed files: $changed_files"
