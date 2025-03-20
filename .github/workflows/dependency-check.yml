@@ -12,6 +12,12 @@ jobs:
       ALERT_ON: "MEDIUM,HIGH,CRITICAL" # Options: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
     
     steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          
       - name: Check for Dependency Lock File Changes
         id: check-changes
         run: |
@@ -36,11 +42,6 @@ jobs:
           
           tar -xzf trivy.tar.gz -C /usr/local/bin
           trivy --version
-    
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Specify Git Safe Directories
         run: |
