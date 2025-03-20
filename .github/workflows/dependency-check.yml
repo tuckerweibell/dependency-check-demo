@@ -37,7 +37,7 @@ jobs:
       image: ruby:3.1.3
     env:
       ALERT_ON: "MEDIUM,HIGH,CRITICAL" # Options: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-    needs: check-dependency-files
+    needs: check-dependency-lock-files-for-changes
     if: needs.check-dependency-files.outputs.match_found == 'true'
     steps:
       - name: Specify Git Safe Directories
