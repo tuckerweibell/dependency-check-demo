@@ -4,7 +4,7 @@ on:
   pull_request
 
 jobs:
-  check-dependency-files:
+  check-dependency-lock-files-for-changes:
     runs-on: ubuntu-latest
     outputs:
       match_found: ${{ steps.check.outputs.match_found }}
@@ -89,11 +89,3 @@ jobs:
       - name: Analyze Scan Results
         id: analyze-scan-results
         run: ruby .github/scripts/dependency_check.rb
-
-  no-dependency-update:
-    runs-on: ubuntu-latest
-    needs: check-dependency-files
-    if: needs.check-dependency-files.outputs.match_found == 'false'
-    steps:
-      - name: Report no dependency update
-        run: echo "No dependency lock file modifications found. Exiting workflow with success."
