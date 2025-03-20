@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Source branch: ${{ github.event.pull_request.head.ref }}"
           echo "Target branch: ${{ github.event.pull_request.base.ref }}"
-          files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD
+          files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} HEAD)
           echo $files
         
             
